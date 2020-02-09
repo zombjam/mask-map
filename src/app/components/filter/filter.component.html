@@ -1,0 +1,28 @@
+<div class="SearchIcon">
+  <span></span>
+  <span></span>
+  <span></span>
+</div>
+
+<div class="Filter">
+  <div class="Filter__Info">
+    <div class="Filter__Today">{{ moment().format('YYYY - MM - DD') }}</div>
+    <div class="Filter__Weekday">{{ moment().format('dddd') }}</div>
+    <div class="Filter__BuyInfo">
+      <ng-container *ngIf="weekDay === 0; else OddOrEven"><span>不限身分證字號</span>，皆可購買口罩。</ng-container>
+      <ng-template #OddOrEven>
+        身分證末一碼
+        <span *ngIf="weekDay % 2 === 1">奇數</span>
+        <span *ngIf="weekDay % 2 === 0">偶數</span>
+        字號者可購買口罩
+      </ng-template>
+    </div>
+    <div class="Filter__Desc">※一週限購一次，每次一人限購兩片</div>
+  </div>
+  <div class="Filter__Search">
+    <div class="Filter__SearchInput">
+      <input type="text" placeholder="搜尋區域 , 地址 , 藥局">
+      <span></span>
+    </div>
+  </div>
+</div>

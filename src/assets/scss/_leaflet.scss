@@ -1,0 +1,29 @@
+@import 'src/assets/scss/color';
+
+$icon-red: #E4552A;
+$icon-orange: #FD9746;
+$icon-green: #4CC45C;
+
+.marker-cluster span {
+  color: $white;
+}
+
+.marker-cluster-small {
+  background-color: rgba($icon-red, 0.33) !important;
+}
+.marker-cluster-small div {
+  background-color: $icon-red !important
+}
+.marker-cluster-medium {
+  background-color: rgba($icon-orange, 0.33) !important;
+}
+.marker-cluster-medium div {
+  background-color: $icon-orange !important
+}
+
+.marker-cluster-large {
+  background-color: rgba($icon-green, 0.33) !important;
+}
+.marker-cluster-large div {
+  background-color: $icon-green !important
+}

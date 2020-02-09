@@ -1,0 +1,85 @@
+@import 'src/assets/scss/variable';
+@import 'src/assets/scss/color';
+@import 'src/assets/scss/rwd';
+
+.MaskMap {
+  display: flex;
+  align-items: stretch;
+  height: 100%;
+  width: 100%;
+  position: relative;
+  font-family: $font-style;
+  overflow: hidden;
+
+  &__SearchIcon {
+    width: 40px;
+    height: 40px;
+    background-color: $orange;
+    border-radius: 3px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    display: none;
+    position: absolute;
+    left: 15px;
+    top: 15px;
+    z-index: 500;
+
+    span {
+      width: 25px;
+      height: 3px;
+      border-radius: 3px;
+      background-color: $white;
+
+      + span {
+        margin-top: 6px;
+      }
+    }
+
+    @include respond-to(small) {
+      display: flex;
+    }
+  }
+
+  &__SearchMask {
+    @include respond-to(small) {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      margin: auto;
+      background-color: rgba($black, .65);
+      height: 100vh;
+      z-index: 1001;
+    }
+  }
+
+  &__Filter {
+    width: $filter-width;
+    background-color: $white;
+
+    @include respond-to(small) {
+      display: none;
+      width: 80%;
+      height: 100vh;
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: 1002;
+
+      &.show {
+        display: block;
+      }
+    }
+  }
+
+  &__Map {
+    width: calc(100% - #{$filter-width});
+
+    @include respond-to(small) {
+    width: 100%;
+    }
+  }
+}

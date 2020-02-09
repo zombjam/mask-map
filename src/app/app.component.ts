@@ -6,5 +6,10 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'mask-map';
+
+  public menuToggle = false;
+
+  public toggleMenu() {
+    this.menuToggle = !this.menuToggle;
+  }
 }

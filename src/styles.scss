@@ -1,1 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
+@import "~leaflet/dist/leaflet.css";
+@import 'src/assets/scss/reset';
+@import 'src/assets/scss/leaflet';
+
+* {
+  box-sizing: border-box;
+}
+
