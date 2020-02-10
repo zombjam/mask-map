@@ -51,14 +51,13 @@
     font-weight: 300;
   }
 
-  &__Search {
+  &__SearchBox {
     padding: 15px 20px;
     border-bottom: 1px solid $gray-3;
   }
 
   &__Result {
-    height: calc(100vh - 140px);
-    min-height: 300px;
+    height: calc(100vh - 265px);
     overflow-y: auto;
   }
 
@@ -100,7 +99,7 @@
   &__Label {
     flex: 1;
     text-align: center;
-    padding: 8px;
+    padding: 6px 8px;
     font-size: 14px;
     border: 1px solid $gray-3;
     border-radius: 7px;
