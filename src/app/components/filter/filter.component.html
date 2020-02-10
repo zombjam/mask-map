@@ -24,5 +24,11 @@
       <input type="text" placeholder="搜尋區域 , 地址 , 藥局">
       <span></span>
     </div>
+    <div class="Filter__Labels">
+      <button class="Filter__Label" [class.Filter__Label--all]="true">所有口罩</button>
+      <button class="Filter__Label" [class.Filter__Label--adult]="false">成人口罩</button>
+      <button class="Filter__Label" [class.Filter__Label--child]="false">兒童口罩</button>
+    </div>
   </div>
+  <div class="Filter__Result"></div>
 </div>
