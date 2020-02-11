@@ -59,6 +59,8 @@ export class MapComponent implements OnInit, AfterViewInit {
         this.lat = position.coords.latitude;
         this.lng = position.coords.longitude;
         this.map.setView(new L.LatLng(this.lat, this.lng), this.zoomValue);
+        console.log('this.lat: ', this.lat);
+        console.log('this.lng: ', this.lng);
 
         this.markers.addLayer(
           L.marker([this.lat, this.lng], { icon: this.$marker.defaultIcon}).addTo(this.map)

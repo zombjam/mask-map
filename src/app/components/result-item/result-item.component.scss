@@ -1,0 +1,82 @@
+@import 'src/assets/scss/color';
+
+.Result {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 20px 8px;
+  line-height: 1.6;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    border-top: 10px solid transparent;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+  }
+
+  // &--high::before {
+  //   border-top-color: $green;
+  //   border-left-color: $green;
+  // }
+  &--medium::before {
+    border-top-color: $orange-2;
+    border-left-color: $orange-2;
+  }
+  &--low::before {
+    border-top-color: $orange;
+    border-left-color: $orange;
+  }
+
+  &__Title {
+    color: $black-2;
+    font-weight: bold;
+  }
+  &__Address {
+    color: $black-3;
+    font-size: 14px;
+  }
+  &__Info {
+    color: $black-3;
+    font-size: 12px;
+
+    span + span {
+      &:before {
+        content: '|';
+        padding: 0 4px;
+      }
+    }
+  }
+
+  &__Labels {
+    display: flex;
+    flex-direction: row;
+    margin-top: 8px;
+
+    span + span {
+      margin-left: 15px;
+    }
+  }
+
+  &__Label {
+    flex: 1;
+    text-align: center;
+    border-radius: 10px;
+    padding: 8px 0px;
+    color: $gray;
+    background-color: #F9F9F9;
+
+    &--adult {
+      color: #FF973B;
+      background-color: #FEEAD9;
+    }
+
+    &--child {
+      color: #F8BE00;
+      background-color: $yellow-2;
+    }
+  }
+}
