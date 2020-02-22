@@ -50,7 +50,7 @@
       right: 0;
       bottom: 0;
       margin: auto;
-      background-color: rgba($black, .65);
+      background-color: rgba($black, 0.65);
       height: 100vh;
       z-index: 1001;
     }
@@ -79,7 +79,7 @@
     width: calc(100% - #{$filter-width});
 
     @include respond-to(small) {
-    width: 100%;
+      width: 100%;
     }
   }
 }

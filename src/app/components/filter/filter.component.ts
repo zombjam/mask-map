@@ -7,14 +7,12 @@ import * as moment from 'moment';
   styleUrls: ['./filter.component.scss']
 })
 export class FilterComponent implements OnInit {
-
   public moment = moment;
 
   public weekDay = moment().weekday();
-  constructor() { }
+  constructor() {}
 
   ngOnInit(): void {
     moment.locale(navigator.language);
   }
-
 }

@@ -5,7 +5,6 @@ import * as L from 'leaflet';
   providedIn: 'root'
 })
 export class MarkerService {
-
   constructor() {
     this.initMarkerIcons();
   }
@@ -26,7 +25,7 @@ export class MarkerService {
       iconSize: [25, 41],
       iconAnchor: [12, 41],
       popupAnchor: [1, -34],
-      tooltipAnchor: [16, -28],
+      tooltipAnchor: [16, -28]
     });
 
     this.greenIcon = this.generateCustomIcons('green');
@@ -36,11 +35,11 @@ export class MarkerService {
 
   private generateCustomIcons(color: string): L.Icon {
     return L.icon({
-      iconUrl: `assets/icon/Icon_location_${color}.svg`,
-      iconSize: [80, 111],
+      iconUrl: `assets/icon/Icon_location_${color}.png`,
+      iconSize: [39, 41],
       iconAnchor: [12, 41],
       popupAnchor: [1, -34],
-      tooltipAnchor: [16, -28],
+      tooltipAnchor: [16, -28]
     });
   }
 }

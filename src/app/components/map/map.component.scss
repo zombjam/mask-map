@@ -1,5 +1,84 @@
 @import 'src/assets/scss/variable';
+@import 'src/assets/scss/color';
 
 #map {
   height: 100%;
+}
+
+::ng-deep.popup-title {
+  display: flex;
+  flex-direction: column;
+
+  span {
+    font-size: 12px;
+    color: $black-3;
+
+    + span {
+      padding-top: 3px;
+    }
+
+    &:first-of-type {
+      color: $black-2;
+      font-size: 16px;
+    }
+
+    &:last-of-type {
+      color: $gray;
+    }
+  }
+}
+
+::ng-deep.popup-label {
+  display: flex;
+  margin-top: 8px;
+
+  span {
+    background-color: $gray;
+    padding: 8px 10px;
+    border-radius: 10px;
+    font-size: 14px;
+    flex: 1;
+    text-align: center;
+    cursor: default;
+
+    + span {
+      margin-left: 6px;
+    }
+
+    &.adult {
+      background-color: rgba($orange, 0.2);
+      color: $orange;
+    }
+
+    &.adult {
+      background-color: rgba($orange, 0.2);
+      color: $orange;
+    }
+
+    &.child {
+      background-color: rgba($yellow, 0.2);
+      color: $yellow;
+    }
+  }
+}
+
+::ng-deep.popup-btn {
+  margin-top: 8px;
+  display: flex;
+
+  a {
+    background-color: $green-2;
+    color: $white;
+    font-size: 14px;
+    text-decoration: none;
+    flex: 1;
+    text-align: center;
+    padding: 8px 4px;
+    border-radius: 10px;
+
+    &:hover {
+      background-color: $green-2;
+      color: $white;
+    }
+  }
 }
