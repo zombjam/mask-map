@@ -1,9 +1,13 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Output, EventEmitter } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
+import * as moment from 'moment';
 import { MarkerService } from 'src/app/service/marker.service';
 import { MaskService } from 'src/app/service/mask.service';
-import { IFilter } from 'src/app/interface';
+import { IFilter, IGeoJson } from 'src/app/interface';
+import { Subject } from 'rxjs';
+import { takeUntil, take } from 'rxjs/operators';
+import { FILTER } from 'src/app/default';
 
 @Component({
   selector: 'app-map',
@@ -18,16 +22,26 @@ export class MapComponent implements OnInit, AfterViewInit {
 
   public map: L.Map;
 
+  @Output() mapEmit = new EventEmitter();
+
   private markers: L.MarkerClusterGroup;
+
+  private filter: IFilter;
+  private onDestroy = new Subject();
+  private onDestroy$ = this.onDestroy.asObservable();
+
   constructor(private $marker: MarkerService, private $mask: MaskService) {}
 
   ngOnInit(): void {
     this.initGeolocation();
+
+    this.$mask.filter$.pipe(takeUntil(this.onDestroy$)).subscribe(filter => (this.filter = filter));
+
+    this.$mask.allMask$.pipe(take(1)).subscribe(allData => this.initMakers(allData));
   }
 
   ngAfterViewInit(): void {
     this.initMap();
-    this.initMakers();
   }
 
   private initMap() {
@@ -37,15 +51,14 @@ export class MapComponent implements OnInit, AfterViewInit {
         dragging: true,
         tap: true
       });
+
+      this.mapEmit.emit(this.map);
       // tileLayer scheme source: http://leaflet-extras.github.io/leaflet-providers/preview/
-      const tiles = L.tileLayer(
-        'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
-        {
-          attribution: `&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>
+      const tiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        attribution: `&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>
         contributors &copy; <a href="https://carto.com/attributions">CARTO</a>`,
-          maxZoom: 16
-        }
-      );
+        maxZoom: 16
+      });
 
       this.markers = L.markerClusterGroup().addTo(this.map);
       tiles.addTo(this.map);
@@ -55,7 +68,29 @@ export class MapComponent implements OnInit, AfterViewInit {
           position: 'bottomright'
         })
         .addTo(this.map);
+
+      this.map.on('moveend', e => {
+        const updateCenter = this.map.getBounds().getCenter();
+        this.lat = updateCenter.lat;
+        this.lng = updateCenter.lng;
+        if (this.filter) {
+          if (this.filter?.page > FILTER.page) {
+            this.updatePosition(FILTER.page);
+          } else {
+            this.updatePosition();
+          }
+        }
+      });
     }
+  }
+
+  private updatePosition(page?: number) {
+    this.$mask.setFilter({
+      ...this.filter,
+      page: page ?? this.filter.page,
+      lat: this.lat,
+      lng: this.lng
+    });
   }
 
   private initGeolocation() {
@@ -65,8 +100,6 @@ export class MapComponent implements OnInit, AfterViewInit {
           this.lat = position.coords.latitude;
           this.lng = position.coords.longitude;
           this.map.setView(new L.LatLng(this.lat, this.lng), this.zoomValue);
-          console.log('this.lat: ', this.lat);
-          console.log('this.lng: ', this.lng);
 
           this.$mask.inital({ lat: this.lat, lng: this.lng } as IFilter);
           this.markers.addLayer(
@@ -89,45 +122,83 @@ export class MapComponent implements OnInit, AfterViewInit {
     this.loading = false;
   }
 
-  private initMakers() {
-    const data = [
-      { name: '軟體園區', lat: 24.937244, lng: 121.354644 },
-      { name: 'ikea', lat: 24.935094, lng: 121.35562 }
-    ];
-    for (let i = 0; data.length > i; i++) {
-      const selectMarker = L.marker([data[i].lat, data[i].lng], {
-        icon: this.$marker.redIcon
-      }).addTo(this.map);
-      selectMarker
-        .bindPopup(
-          `
-        <div class="popup-title">
-          <span>合康健保藥局</span>
-          <span>24154新北市三重區三和路四段384號</span>
-          <span>營業時間 | 9:00 - 22:00</span>
-          <span>連絡電話 | 02 2286 8999</span>
-          <span>資訊更新於4分鐘前</span>
-        </div>
-        <div class="popup-label">
-          <span class="adult">成人口罩 60個</span>
-          <span class="child">兒童口罩 42個</span>
-        </div>
-        <div class="popup-btn">
-          <a href="" target="_blank">Google 路線導航</a>
-        </div>
-      `,
-          {
-            minWidth: 240,
-            keepInView: true
-          }
-        )
-        .openPopup();
-      this.markers.addLayer(selectMarker);
+  private initMakers(makersData: IGeoJson[]) {
+    if (!makersData?.length) {
+      return;
     }
-    this.map.addLayer(this.markers);
+    const cluster = new L.MarkerClusterGroup();
+    this.map.addLayer(cluster);
+
+    const allMarkers = [] as L.Marker[];
+
+    makersData.forEach(data => {
+      const info = data.properties;
+      const coordinates = data.geometry.coordinates;
+      const mapLatLng = `${coordinates[1]},${coordinates[0]}`;
+      const markerIcon = this.setMarkerIconStyle(data);
+      const position = new L.LatLng(data.geometry.coordinates[1], data.geometry.coordinates[0]);
+      const itemPop = L.popup({
+        minWidth: 240
+      }).setLatLng(position).setContent(`
+          <div class="popup-title">
+            <span class="title">${info.name}</span>
+            <span>${info.address}</span>
+            <span>連絡電話 | ${info.phone}</span>
+            <span class="info ${'info-' + info.id}"><span>營業資訊</span><i class="material-icons">info</i></span>
+            ${info.updated ? `<span class="update">資訊更新於 ${moment(info.updated).fromNow()}</span>` : ''}
+          </div>
+          ${this.getMaskDetailTemplate(data)}
+          <div class="popup-btn">
+            <a target="_blank"
+            href="https://www.google.com/maps/dir/?api=1&destination=${mapLatLng}//${info.name}">Google 路線導航</a>
+          </div>
+      `);
+
+      const mrks = L.marker(position, { icon: markerIcon, title: `marker-${info.id}` });
+      cluster.addLayer(mrks);
+      mrks.bindPopup(itemPop).on('popupopen', () => {
+        const infoEle = document.querySelector(`.info-${info.id}`);
+        if (infoEle) {
+          infoEle.addEventListener('click', e => this.openInfoOverlay(data, e));
+        }
+      });
+      allMarkers.push(mrks);
+    });
+    this.$marker.markers.next(allMarkers as any);
   }
 
-  private generateCircleMarkers(lat: number, lng: number) {
-    L.circleMarker([lat, lng]).addTo(this.map);
+  private setMarkerIconStyle(data: IGeoJson) {
+    const totalCount = data.properties.mask_adult + data.properties.mask_child;
+    if (totalCount > 200) {
+      return this.$marker.greenIcon;
+    } else if (totalCount > 100 && totalCount < 200) {
+      return this.$marker.orangeIcon;
+    } else {
+      return this.$marker.redIcon;
+    }
+  }
+
+  private getMaskDetailTemplate(data: IGeoJson) {
+    const info = data.properties;
+    if (info.updated) {
+      return `
+        <div class="popup-label">
+          <span class="adult">成人口罩 ${info.mask_adult}個</span>
+          <span class="child">兒童口罩 ${info.mask_child}個</span>
+        </div>
+      `;
+    } else {
+      return `
+        <div class="popup-error">
+          <span><i class="material-icons">info_outline</i>無法取得正確資料</span>
+          <span>* 中央健保署的資料似乎有問題，請電洽藥局。</span>
+        </div>
+      `;
+    }
+  }
+
+  public openInfoOverlay(data: IGeoJson, e?: Event) {
+    e?.stopPropagation();
+    this.$mask.overlay.next(data);
   }
 }

@@ -1,13 +1,19 @@
-<div class="Result">
-  <span class="Result__Title">合康健保藥局</span>
-  <span class="Result__Address">25154新北市三重區三和路四段384號</span>
+<div class="Result" *ngIf="geoData?.properties" [ngClass]="getMaskLevel()">
+  <span class="Result__Title" (click)="openDetailMap($event)">{{ geoData.properties.name }}</span>
+  <span class="Result__Address">{{ geoData.properties.address }}</span>
   <span class="Result__Info">
-    <span>營業時間</span>
-    <span>9:00 - 22:30</span>
+    <span (click)="openInfoOverlay($event)">
+      <span>營業資訊</span>
+      <i class="material-icons">info</i>
+    </span>
   </span>
-  <span class="Result__Labels">
-    <span class="Result__Label Result__Label--adult">成人口罩 60個</span>
-    <span class="Result__Label Result__Label--child">兒童口罩 42個</span>
-    <!-- <span class="Result__Label">口罩缺貨中</span> -->
+  <span class="Result__Labels" *ngIf="geoData.properties.updated">
+    <span class="Result__Label" *ngIf="geoData.properties.mask_adult === 0 && geoData.properties.mask_child === 0">口罩缺貨中</span>
+    <span class="Result__Label Result__Label--adult" *ngIf="geoData.properties.mask_adult; let adultMask">成人口罩 {{ adultMask }}個</span>
+    <span class="Result__Label Result__Label--child" *ngIf="geoData.properties.mask_child; let childMask">兒童口罩 {{ childMask }}個</span>
+  </span>
+  <span class="Result__Error" *ngIf="!geoData.properties.updated">
+    <span><i class="material-icons">info_outline</i>無法取得正確資料</span>
+    <span>* 中央健保署的資料似乎有問題，請電洽藥局。</span>
   </span>
 </div>

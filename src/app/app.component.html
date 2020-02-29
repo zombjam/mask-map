@@ -5,6 +5,8 @@
     <span></span>
   </div>
   <div class="MaskMap__SearchMask" *ngIf="menuToggle" (click)="toggleMenu()"></div>
-  <app-filter class="MaskMap__Filter" [class.show]="menuToggle"></app-filter>
-  <app-map class="MaskMap__Map"></app-map>
+  <app-filter class="MaskMap__Filter" [map]="this.map" [class.show]="menuToggle"></app-filter>
+  <app-map class="MaskMap__Map" (mapEmit)="setMap($event)"></app-map>
 </div>
+
+<app-dialog *ngIf="$mask.overlay$ | async; let overlay" [overlay]="overlay"></app-dialog>

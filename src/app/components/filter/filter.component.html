@@ -36,8 +36,14 @@
       </button>
     </div>
   </div>
-  <div class="Filter__Result">
-    <app-result-item class="Filter__ResultItem"></app-result-item>
-    <app-result-item class="Filter__ResultItem"></app-result-item>
-  </div>
+  <ng-container *ngIf="{ params: this.$mask.filter$ | async, allCount: this.$mask.count$ | async }; let data">
+    <div class="Filter__Result" (scroll)="onScroll($event, data)">
+      <app-result-item
+        class="Filter__ResultItem"
+        *ngFor="let geoData of this.$mask.getMask$ | async; trackBy: trackByFn"
+        [geoData]="geoData"
+        (clickEvent)="openDetail(geoData)"
+      ></app-result-item>
+    </div>
+  </ng-container>
 </div>

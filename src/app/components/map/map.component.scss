@@ -17,13 +17,23 @@
       padding-top: 3px;
     }
 
-    &:first-of-type {
+    &.title {
       color: $black-2;
       font-size: 16px;
     }
 
-    &:last-of-type {
-      color: $gray;
+    &.update {
+      color: #b1b1b1;
+      padding-top: 5px;
+    }
+
+    &.info {
+      cursor: pointer;
+      width: max-content;
+      span {
+        border-bottom: 1px dashed $black-3;
+        padding-bottom: 2px;
+      }
     }
   }
 }
@@ -34,7 +44,7 @@
 
   span {
     background-color: $gray;
-    padding: 8px 10px;
+    padding: 8px 5px;
     border-radius: 10px;
     font-size: 14px;
     flex: 1;
@@ -62,23 +72,45 @@
   }
 }
 
-::ng-deep.popup-btn {
-  margin-top: 8px;
+::ng-deep.popup-error {
   display: flex;
+  flex-direction: column;
+  margin-top: 8px;
 
-  a {
-    background-color: $green-2;
-    color: $white;
-    font-size: 14px;
-    text-decoration: none;
-    flex: 1;
-    text-align: center;
-    padding: 8px 4px;
-    border-radius: 10px;
+  span:first-of-type {
+    color: $font-red;
+  }
+}
 
-    &:hover {
+::ng-deep {
+  .leaflet-container a.leaflet-popup-close-button {
+    top: 3px;
+    right: 3px;
+  }
+
+  .leaflet-top,
+  .leaflet-bottom {
+    z-index: 400 !important;
+  }
+
+  .popup-btn {
+    margin-top: 8px;
+    display: flex;
+
+    a {
       background-color: $green-2;
       color: $white;
+      font-size: 14px;
+      text-decoration: none;
+      flex: 1;
+      text-align: center;
+      padding: 8px 4px;
+      border-radius: 10px;
+
+      &:hover {
+        background-color: $green-2;
+        color: $white;
+      }
     }
   }
 }

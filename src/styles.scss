@@ -1,5 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-@import "~leaflet/dist/leaflet.css";
+@import '~leaflet/dist/leaflet.css';
 @import 'src/assets/scss/reset';
 @import 'src/assets/scss/leaflet';
 
@@ -7,3 +7,30 @@
   box-sizing: border-box;
 }
 
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 16px; /* Preferred icon size */
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  padding-left: 2px;
+  padding-bottom: 2px;
+
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}

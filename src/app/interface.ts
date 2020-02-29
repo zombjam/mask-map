@@ -1,29 +1,30 @@
 export interface IFilter {
-  address: string;
-  lat: number;
-  lng: number;
+  address?: string;
+  lat?: number;
+  lng?: number;
+  per: number;
+  page: number;
 }
 
-
-export interface MaskModel {
+export interface IMaskModel {
   type: string;
-  features: GeoJson[];
+  features: IGeoJson[];
 }
 
-export interface GeoJson {
+export interface IGeoJson {
   type: string;
-  properties: GeoProperty[];
-  geometry: Geometry;
+  properties: IGeoProperty;
+  geometry: IGeometry;
 }
 
-export interface GeoProperty {
+export interface IGeoProperty {
   id: number;
   name: string;
   phone: string;
   address: string;
   mask_adult: number;
   mask_child: number;
-  update: string;
+  updated: string | Date;
   avaiable: string;
   note: string;
   custom_note: string;
@@ -31,13 +32,10 @@ export interface GeoProperty {
   contry: string;
   town: string;
   cunli: string;
-  service_period: string;
-  service_note: string;
+  service_periods: string;
 }
 
-export interface Geometry {
+export interface IGeometry {
   type: string;
-  conordinaties: [number, number]; // [longitude, latitude]
+  coordinates: [number, number]; // [longitude, latitude]
 }
-
-

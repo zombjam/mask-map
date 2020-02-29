@@ -1,0 +1,42 @@
+<div class="Dialog">
+  <div class="Dialog__Container" (click)="close($event)">
+    <div class="Dialog__Content" *ngIf="overlay?.properties; let detail">
+      <span class="Dialog__Title">{{ detail.name }}</span>
+      <span class="Dialog__Info"
+        >{{ detail.address }}
+        <a
+          [attr.href]="
+            'https://www.google.com/maps/dir/?api=1&destination=' +
+            (this.overlay?.geometry?.coordinates)[1] +
+            ',' +
+            (this.overlay?.geometry?.coordinates)[0] +
+            '//' +
+            detail.name
+          "
+          target="_blank"
+        >
+          <i class="material-icons">navigation</i>
+        </a>
+      </span>
+      <span class="Dialog__Info">電話 | {{ detail.phone }}</span>
+      <span class="Dialog__Info" *ngIf="detail.note !== '-'">備註 | {{ detail.note }}</span>
+      <span class="Dialog__Info Dialog__Info--update" *ngIf="detail.updated">資訊更新於 {{ moment(detail.updated).fromNow() }}</span>
+
+      <table class="Dialog__BusinessHour">
+        <thead>
+          <tr>
+            <th *ngFor="let head of this.heads">{{ head }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let service of this.servicePeriods; trackBy: trackByFn">
+            <td>{{ service.periodName }}</td>
+            <td *ngFor="let isServe of service.periods; trackBy: trackByFn">
+              <span *ngIf="isServe">O</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as L from 'leaflet';
+import { ReplaySubject } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +15,9 @@ export class MarkerService {
   public greenIcon: L.Icon;
   public orangeIcon: L.Icon;
   public redIcon: L.Icon;
+
+  public markers: ReplaySubject<L.Marker[]> = new ReplaySubject(1);
+  public markers$ = (id: number) => this.markers.asObservable().pipe(map(markers => markers.find(m => m.options.title === `marker-${id}`)));
 
   private initMarkerIcons() {
     const defaultRetinaUrl = 'assets/marker-icon-2x.png';
