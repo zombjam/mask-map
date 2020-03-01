@@ -1,0 +1,51 @@
+// ----------------------------------------------------------------------
+
+  // Rwd
+
+// ----------------------------------------------------------------------
+@import './variable';
+
+// @include respond-to(small) { ... }  <-把東西帶入
+// @include respond-to(medium) { ... }
+// @include respond-to(large) { ... }
+
+@mixin respond-to($breakpoint) {
+  // @if $breakpoint == "small_max"{
+  //   @media screen and(max-width: $small_max){
+  //     @content;
+  //   }
+  // }
+  // @else if $breakpoint == "xs" {
+  //   @media screen and (max-width: $xs) {
+  //     @content;
+  //   }
+  // }
+  // @else if $breakpoint == "mobile_380" {
+  //   @media screen and (max-width: $mobile_380){
+  //     @content;
+  //   }
+  // }
+  // @else if $breakpoint == "mobile"{
+  //   @media screen and(max-width: $mobile){
+  //     @content;
+  //   }
+  // }
+
+  @if $breakpoint == "small" {
+    @media screen and (max-width: $small){
+      @content;
+    }
+  }
+
+  @else if $breakpoint == "medium" {
+    @media screen and (max-width: $medium) {
+      @content;
+    }
+  }
+
+  @else if $breakpoint == "large" {
+    @media screen and (max-width: $large) {
+      @content;
+    }
+  }
+}
