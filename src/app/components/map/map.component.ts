@@ -1,7 +1,6 @@
 import { Component, OnInit, AfterViewInit, Output, EventEmitter } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
-import * as moment from 'moment';
 import { MarkerService } from 'src/app/service/marker.service';
 import { MaskService } from 'src/app/service/mask.service';
 import { IFilter, IGeoJson } from 'src/app/interface';
@@ -37,7 +36,7 @@ export class MapComponent implements OnInit, AfterViewInit {
 
     this.$mask.filter$.pipe(takeUntil(this.onDestroy$)).subscribe(filter => (this.filter = filter));
 
-    this.$mask.allMask$.pipe(take(1)).subscribe(allData => this.initMakers(allData));
+    this.$mask.allMask$.pipe(take(1)).subscribe(allData => this.initMarkers(allData));
   }
 
   ngAfterViewInit(): void {
@@ -122,37 +121,34 @@ export class MapComponent implements OnInit, AfterViewInit {
     this.loading = false;
   }
 
-  private initMakers(makersData: IGeoJson[]) {
-    if (!makersData?.length) {
+  private initMarkers(mkrsData: IGeoJson[]) {
+    if (!mkrsData?.length) {
       return;
     }
     const cluster = new L.MarkerClusterGroup();
     this.map.addLayer(cluster);
 
-    const allMarkers = [] as L.Marker[];
+    const allMkrs = [] as L.Marker[];
 
-    makersData.forEach(data => {
+    mkrsData.forEach(data => {
       const info = data.properties;
       const markerIcon = this.setMarkerIconStyle(data);
       const position = new L.LatLng(data.geometry.coordinates[1], data.geometry.coordinates[0]);
-      const itemPop = L.popup({ minWidth: 240 }).setLatLng(position);
+      const itemPop = L.popup({ minWidth: 240 })
+        .setLatLng(position)
+        .setContent(this.$marker.setPopupContent(data));
 
       const mrks = L.marker(position, { icon: markerIcon, title: `marker-${info.id}` });
       cluster.addLayer(mrks);
-      mrks
-        .bindPopup(itemPop)
-        .on('click', () => {
-          itemPop.setContent(this.$marker.setPopupContent(data)).update();
-        })
-        .on('popupopen', () => {
-          const infoEle = document.querySelector(`.info-${info.id}`);
-          if (infoEle) {
-            infoEle.addEventListener('click', e => this.openInfoOverlay(data, e));
-          }
-        });
-      allMarkers.push(mrks);
+      mrks.bindPopup(itemPop).on('popupopen', () => {
+        const infoEle = document.querySelector(`.info-${info.id}`);
+        if (infoEle) {
+          infoEle.addEventListener('click', e => this.openInfoOverlay(data, e));
+        }
+      });
+      allMkrs.push(mrks);
     });
-    this.$marker.markers.next(allMarkers as any);
+    this.$marker.markers.next(allMkrs as any);
   }
 
   private setMarkerIconStyle(data: IGeoJson) {

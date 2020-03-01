@@ -1,3 +1,9 @@
+<ngx-loading
+  *ngIf="loading$ | async; let loading"
+  [show]="loading"
+  [config]="{ animationType: ngxLoadingAnimationTypes.rotatingPlane, primaryColour: '#d65600' }"
+></ngx-loading>
+
 <div class="MaskMap">
   <div class="MaskMap__SearchIcon" *ngIf="!menuToggle" (click)="toggleMenu()">
     <span></span>

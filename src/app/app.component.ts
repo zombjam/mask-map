@@ -1,7 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MaskService } from './service/mask.service';
 import { timer, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, map, take } from 'rxjs/operators';
+import { ngxLoadingAnimationTypes } from 'ngx-loading';
 
 @Component({
   selector: 'app-root',
@@ -17,6 +18,13 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private onDestroy = new Subject();
   private onDestroy$ = this.onDestroy.asObservable();
+
+  public loading$ = timer(0, 4500).pipe(
+    map(v => v === 0),
+    take(2)
+  );
+
+  public ngxLoadingAnimationTypes = ngxLoadingAnimationTypes;
 
   ngOnInit(): void {
     timer(0, 300000)
