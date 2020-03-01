@@ -133,35 +133,23 @@ export class MapComponent implements OnInit, AfterViewInit {
 
     makersData.forEach(data => {
       const info = data.properties;
-      const coordinates = data.geometry.coordinates;
-      const mapLatLng = `${coordinates[1]},${coordinates[0]}`;
       const markerIcon = this.setMarkerIconStyle(data);
       const position = new L.LatLng(data.geometry.coordinates[1], data.geometry.coordinates[0]);
-      const itemPop = L.popup({
-        minWidth: 240
-      }).setLatLng(position).setContent(`
-          <div class="popup-title">
-            <span class="title">${info.name}</span>
-            <span>${info.address}</span>
-            <span>連絡電話 | ${info.phone}</span>
-            <span class="info ${'info-' + info.id}"><span>營業資訊</span><i class="material-icons">info</i></span>
-            ${info.updated ? `<span class="update">資訊更新於 ${moment(info.updated).fromNow()}</span>` : ''}
-          </div>
-          ${this.getMaskDetailTemplate(data)}
-          <div class="popup-btn">
-            <a target="_blank"
-            href="https://www.google.com/maps/dir/?api=1&destination=${mapLatLng}//${info.name}">Google 路線導航</a>
-          </div>
-      `);
+      const itemPop = L.popup({ minWidth: 240 }).setLatLng(position);
 
       const mrks = L.marker(position, { icon: markerIcon, title: `marker-${info.id}` });
       cluster.addLayer(mrks);
-      mrks.bindPopup(itemPop).on('popupopen', () => {
-        const infoEle = document.querySelector(`.info-${info.id}`);
-        if (infoEle) {
-          infoEle.addEventListener('click', e => this.openInfoOverlay(data, e));
-        }
-      });
+      mrks
+        .bindPopup(itemPop)
+        .on('click', () => {
+          itemPop.setContent(this.$marker.setPopupContent(data)).update();
+        })
+        .on('popupopen', () => {
+          const infoEle = document.querySelector(`.info-${info.id}`);
+          if (infoEle) {
+            infoEle.addEventListener('click', e => this.openInfoOverlay(data, e));
+          }
+        });
       allMarkers.push(mrks);
     });
     this.$marker.markers.next(allMarkers as any);

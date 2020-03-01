@@ -61,7 +61,10 @@ export class FilterComponent implements OnInit {
         take(1)
       )
       .subscribe(marker => {
-        marker.getPopup().openOn(this.map);
+        marker
+          .getPopup()
+          .setContent(this.$marker.setPopupContent(geoData))
+          .openOn(this.map);
         if (this.map.getZoom() < 16) {
           const cooredinate = new L.LatLng(geoData.geometry.coordinates[1], geoData.geometry.coordinates[0]);
           this.map.setView(cooredinate, 16);
