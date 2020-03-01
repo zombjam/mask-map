@@ -62,9 +62,9 @@
     overflow-y: auto;
   }
 
-  &__ResultItem {
-    border-bottom: 1px solid $gray-3;
-  }
+  // &__ResultItem {
+  //   border-bottom: 1px solid $gray-3;
+  // }
 
   &__SearchInput {
     display: flex;
@@ -117,19 +117,22 @@
       margin-left: 12px;
     }
 
-    &--all {
+    &--all,
+    &--0 {
       background-color: $orange;
       color: $white;
       border-color: $orange;
     }
 
-    &--adult {
+    &--adult,
+    &--1 {
       background-color: $orange-2;
       color: $white;
       border-color: $orange-2;
     }
 
-    &--child {
+    &--child,
+    &--2 {
       background-color: $yellow;
       color: $white;
       border-color: $yellow;

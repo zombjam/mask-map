@@ -1,5 +1,5 @@
-<div class="Result" *ngIf="geoData?.properties" [ngClass]="getMaskLevel()">
-  <span class="Result__Title" (click)="openDetailMap($event)">{{ geoData.properties.name }}</span>
+<div class="Result" *ngIf="geoData?.properties && this.filerTab()" [ngClass]="getMaskLevel()" (click)="openDetailMap($event)">
+  <span class="Result__Title">{{ geoData.properties.name }}</span>
   <span class="Result__Address">{{ geoData.properties.address }}</span>
   <span class="Result__Info">
     <span (click)="openInfoOverlay($event)">
@@ -9,11 +9,19 @@
   </span>
   <span class="Result__Labels" *ngIf="geoData.properties.updated">
     <span class="Result__Label" *ngIf="geoData.properties.mask_adult === 0 && geoData.properties.mask_child === 0">口罩缺貨中</span>
-    <span class="Result__Label Result__Label--adult" *ngIf="geoData.properties.mask_adult; let adultMask">成人口罩 {{ adultMask }}個</span>
-    <span class="Result__Label Result__Label--child" *ngIf="geoData.properties.mask_child; let childMask">兒童口罩 {{ childMask }}個</span>
+    <ng-container *ngIf="selectTab !== 2">
+      <span class="Result__Label Result__Label--adult" *ngIf="geoData.properties.mask_adult; let adultMask"
+        >成人口罩 {{ adultMask }}個</span
+      >
+    </ng-container>
+    <ng-container *ngIf="selectTab !== 1">
+      <span class="Result__Label Result__Label--child" *ngIf="geoData.properties.mask_child; let childMask"
+        >兒童口罩 {{ childMask }}個</span
+      >
+    </ng-container>
   </span>
   <span class="Result__Error" *ngIf="!geoData.properties.updated">
-    <span><i class="material-icons">info_outline</i>無法取得正確資料</span>
+    <span><i class="material-icons">info_outline</i>無法取得即時資料</span>
     <span>* 中央健保署的資料似乎有問題，請電洽藥局。</span>
   </span>
 </div>

@@ -19,29 +19,30 @@
     </div>
     <div class="Filter__Desc">※一週限購一次，每次一人限購兩片</div>
   </div>
-  <div class="Filter__SearchBox">
-    <div class="Filter__SearchInput">
-      <input type="text" placeholder="搜尋區域 , 地址 , 藥局" />
-      <span></span>
-    </div>
-    <div class="Filter__Labels">
-      <button class="Filter__Label" [class.Filter__Label--all]="true">
-        所有口罩
-      </button>
-      <button class="Filter__Label" [class.Filter__Label--adult]="false">
-        成人口罩
-      </button>
-      <button class="Filter__Label" [class.Filter__Label--child]="false">
-        兒童口罩
-      </button>
-    </div>
-  </div>
+
   <ng-container *ngIf="{ params: this.$mask.filter$ | async, allCount: this.$mask.count$ | async }; let data">
+    <div class="Filter__SearchBox">
+      <div class="Filter__SearchInput">
+        <input type="text" #searchText placeholder="搜尋區域 , 地址 , 藥局" (keyup)="setSearchText(data.params, searchText.value)" />
+        <span (click)="setSearchText(data.params, searchText.value)"></span>
+      </div>
+      <div class="Filter__Labels">
+        <button
+          class="Filter__Label"
+          *ngFor="let tab of this.TAB_GROUP; let i = index; trackBy: trackByFn"
+          [ngClass]="data.params?.tab === i ? 'Filter__Label--' + i : ''"
+          (click)="this.setTab(data.params, i)"
+        >
+          {{ tab }}
+        </button>
+      </div>
+    </div>
     <div class="Filter__Result" (scroll)="onScroll($event, data)">
       <app-result-item
         class="Filter__ResultItem"
         *ngFor="let geoData of this.$mask.getMask$ | async; trackBy: trackByFn"
         [geoData]="geoData"
+        [selectTab]="data.params?.tab"
         (clickEvent)="openDetail(geoData)"
       ></app-result-item>
     </div>

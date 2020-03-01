@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { IGeoJson } from 'src/app/interface';
 import { MaskService } from 'src/app/service/mask.service';
+import { TAB_OPTION } from 'src/app/default';
 
 @Component({
   selector: 'app-result-item',
@@ -9,6 +10,7 @@ import { MaskService } from 'src/app/service/mask.service';
 })
 export class ResultItemComponent implements OnInit {
   @Input() geoData: IGeoJson;
+  @Input() selectTab: 0 | 1 | 2;
 
   @Output() clickEvent = new EventEmitter();
 
@@ -38,5 +40,12 @@ export class ResultItemComponent implements OnInit {
   public openDetailMap(e: Event) {
     e.stopPropagation();
     this.clickEvent.emit();
+  }
+
+  public filerTab() {
+    if (!this.selectTab) {
+      return true;
+    }
+    return this.geoData.properties[TAB_OPTION[this.selectTab]] > 0;
   }
 }

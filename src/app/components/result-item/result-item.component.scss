@@ -6,6 +6,8 @@
   padding: 10px 20px 8px;
   line-height: 1.6;
   position: relative;
+  cursor: pointer;
+  border-bottom: 1px solid $gray-3;
 
   &::before {
     content: '';
@@ -36,7 +38,6 @@
   &__Title {
     color: $black-2;
     font-weight: bold;
-    cursor: pointer;
   }
 
   &__Address {

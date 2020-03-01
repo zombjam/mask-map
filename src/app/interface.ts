@@ -1,5 +1,6 @@
 export interface IFilter {
-  address?: string;
+  searchText?: string;
+  tab: 0 | 1 | 2;
   lat?: number;
   lng?: number;
   per: number;

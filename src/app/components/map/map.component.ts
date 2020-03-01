@@ -105,7 +105,7 @@ export class MapComponent implements OnInit, AfterViewInit {
           this.markers.addLayer(
             L.marker([this.lat, this.lng], { icon: this.$marker.defaultIcon })
               .addTo(this.map)
-              .bindTooltip('You', {
+              .bindTooltip('目前位置', {
                 direction: 'top',
                 offset: L.point(0, -8),
                 permanent: true
@@ -190,7 +190,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     } else {
       return `
         <div class="popup-error">
-          <span><i class="material-icons">info_outline</i>無法取得正確資料</span>
+          <span><i class="material-icons">info_outline</i>無法取得即時資料</span>
           <span>* 中央健保署的資料似乎有問題，請電洽藥局。</span>
         </div>
       `;

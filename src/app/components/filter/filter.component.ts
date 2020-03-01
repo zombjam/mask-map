@@ -1,10 +1,12 @@
 import { Component, OnInit, Input } from '@angular/core';
 import * as moment from 'moment';
 import { MaskService } from 'src/app/service/mask.service';
-import { IGeoJson } from 'src/app/interface';
+import { IGeoJson, IFilter } from 'src/app/interface';
 import { MarkerService } from 'src/app/service/marker.service';
-import { filter, take } from 'rxjs/operators';
+import { filter, take, debounce, debounceTime } from 'rxjs/operators';
 import * as L from 'leaflet';
+import { TAB_GROUP, TAB_OPTION } from 'src/app/default';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-filter',
@@ -16,10 +18,20 @@ export class FilterComponent implements OnInit {
   public moment = moment;
   public weekDay = moment().weekday();
 
+  public TAB_GROUP = Object.values(TAB_GROUP);
+
+  private keyEvent: Subject<string> = new Subject();
+
+  private searchFilter: IFilter;
+
   constructor(public $mask: MaskService, private $marker: MarkerService) {}
 
   ngOnInit(): void {
     moment.locale(navigator.language);
+    this.keyEvent.pipe(debounceTime(500)).subscribe(searchText => {
+      console.log('searchText: ', searchText);
+      this.$mask.setFilter({ ...this.searchFilter, searchText });
+    });
   }
 
   public trackByFn(index: number) {
@@ -42,7 +54,6 @@ export class FilterComponent implements OnInit {
     if (!geoData || !geoData.properties || !geoData.geometry.coordinates) {
       return;
     }
-    const cooredinate = new L.LatLng(geoData.geometry.coordinates[1], geoData.geometry.coordinates[0]);
     this.$marker
       .markers$(geoData.properties.id)
       .pipe(
@@ -50,8 +61,20 @@ export class FilterComponent implements OnInit {
         take(1)
       )
       .subscribe(marker => {
-        this.map.setView(cooredinate, 16);
-        marker.addTo(this.map).openPopup();
+        marker.getPopup().openOn(this.map);
+        if (this.map.getZoom() < 16) {
+          const cooredinate = new L.LatLng(geoData.geometry.coordinates[1], geoData.geometry.coordinates[0]);
+          this.map.setView(cooredinate, 16);
+        }
       });
+  }
+
+  public setTab(params: IFilter, tab: 0 | 1 | 2) {
+    this.$mask.setFilter({ ...params, tab });
+  }
+
+  public setSearchText(params: IFilter, searchText: string) {
+    this.searchFilter = params;
+    this.keyEvent.next(searchText);
   }
 }

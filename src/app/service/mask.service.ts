@@ -3,7 +3,7 @@ import { Subject, ReplaySubject } from 'rxjs';
 import { IFilter, IMaskModel, IGeoJson } from '../interface';
 import { switchMap, scan, map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
-import { FILTER } from '../default';
+import { FILTER, TAB_OPTION } from '../default';
 
 @Injectable({
   providedIn: 'root'
@@ -27,9 +27,15 @@ export class MaskService {
     switchMap((params: IFilter) =>
       this.allMask$.pipe(
         map(allData => {
-          const nearestList = this.nearestCity(allData, params.lat, params.lng);
-          this.count.next(nearestList.length);
-          return nearestList;
+          if (params.searchText) {
+            return allData.filter(
+              data => data.properties.address.includes(params.searchText) || data.properties.name.includes(params.searchText)
+            );
+          } else {
+            const nearestList = this.filterTabMask(params, this.nearestCity(allData, params.lat, params.lng));
+            this.count.next(nearestList.length);
+            return nearestList;
+          }
         }),
         map(allData => allData.filter((data, indx) => indx >= 0 && indx < params.page * params.per))
       )
@@ -41,6 +47,14 @@ export class MaskService {
 
   public overlay: Subject<IGeoJson> = new Subject();
   public overlay$ = this.overlay.asObservable();
+
+  private filterTabMask(params: IFilter, allData: IGeoJson[]) {
+    if (!params.tab) {
+      return allData;
+    }
+    const tab = TAB_OPTION[params.tab];
+    return allData.filter(data => data.properties[tab] > 0);
+  }
 
   public getMaskData() {
     return this.http.get(`https://raw.githubusercontent.com/kiang/pharmacies/master/json/points.json`).pipe(
