@@ -83,7 +83,7 @@ export class MarkerService {
           ${this.getMaskDetailTemplate(geoData)}
           <div class="popup-btn">
             <a target="_blank"
-            href="https://www.google.com/maps/dir/?api=1&destination=${mapLatLng}//${info.name}">Google 路線導航</a>
+            href="https://www.google.com/maps/dir/?api=1&destination=${mapLatLng}&travelmode=driving">Google 路線導航</a>
           </div>
       `;
   }

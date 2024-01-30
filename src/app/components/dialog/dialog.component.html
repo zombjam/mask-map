@@ -10,8 +10,7 @@
             (this.overlay?.geometry?.coordinates)[1] +
             ',' +
             (this.overlay?.geometry?.coordinates)[0] +
-            '//' +
-            detail.name
+            '&travelmode=driving/'
           "
           target="_blank"
         >
@@ -19,8 +18,12 @@
         </a>
       </span>
       <span class="Dialog__Info">電話 | {{ detail.phone }}</span>
-      <span class="Dialog__Info" *ngIf="detail.note !== '-'">備註 | {{ detail.note }}</span>
-      <span class="Dialog__Info Dialog__Info--update" *ngIf="detail.updated">資訊更新於 {{ moment(detail.updated).fromNow() }}</span>
+      <span class="Dialog__Info" *ngIf="detail.note !== '-'"
+        >備註 | {{ detail.note }}</span
+      >
+      <span class="Dialog__Info Dialog__Info--update" *ngIf="detail.updated"
+        >資訊更新於 {{ moment(detail.updated).fromNow() }}</span
+      >
 
       <table class="Dialog__BusinessHour">
         <thead>
